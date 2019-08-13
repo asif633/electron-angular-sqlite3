@@ -1,0 +1,105 @@
+<nz-page-header nzBackIcon (nzBack)="getBack()">
+    <nz-page-header-title>New Patient</nz-page-header-title>
+    <nz-page-header-subtitle>Create New Patient Detail</nz-page-header-subtitle>
+    <nz-page-header-tags>
+    </nz-page-header-tags>
+    <nz-page-header-extra>
+        <button nz-button nz-dropdown [nzDropdownMenu]="menu">Save<i nz-icon nzType="down"></i></button>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+                <li nz-menu-item>
+                    <a (click)="whichButtonSubmit('save')">Save and Back to Patients List</a>
+                </li>
+                <li nz-menu-item>
+                    <a (click)="whichButtonSubmit('another')">Save and Add Another</a>
+                </li>
+                <li nz-menu-item>
+                    <a (click)="whichButtonSubmit('prescription')">Save and Go to Prescription</a>
+                </li>
+            </ul>
+        </nz-dropdown-menu>
+    </nz-page-header-extra>
+    <nz-page-header-content>
+        <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+            <nz-form-item>
+                <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="name" nzRequired>
+                    <span>
+                        Name
+                        <i nz-icon nz-tooltip nzTitle="Name" type="question-circle" nzTheme="outline"></i>
+                    </span>
+                </nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input name!">
+                    <input nz-input id="name" formControlName="name" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="gender" nzRequired>
+                    <span>
+                        Gender
+                        <i nz-icon nz-tooltip nzTitle="Gender" type="question-circle" nzTheme="outline"></i>
+                    </span>
+                </nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                    <nz-select formControlName="gender">
+                        <nz-option nzLabel="Male" nzValue="Male"></nz-option>
+                        <nz-option nzLabel="Female" nzValue="Female"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="address">
+                    <span>
+                        Address
+                        <i nz-icon nz-tooltip nzTitle="Address" type="question-circle" nzTheme="outline"></i>
+                    </span>
+                </nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                    <input nz-input id="address" formControlName="address" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="age" nzRequired>Age</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24" [nzValidateStatus]="validateForm.controls['age']"
+                    nzErrorTip="Please enter age!">
+                    <nz-input-group [nzAddOnAfter]="addOnBeforeTemplate">
+                        <ng-template #addOnBeforeTemplate>
+                            <nz-select formControlName="ageEnum" class="phone-select">
+                                <nz-option nzLabel="Years" nzValue="Years"></nz-option>
+                                <nz-option nzLabel="Months" nzValue="Months"></nz-option>
+                                <nz-option nzLabel="Days" nzValue="Days"></nz-option>
+                            </nz-select>
+                        </ng-template>
+                        <input formControlName="age" id="'age'" nz-input />
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="phonenumber" nzRequired>Phone Number</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24" [nzValidateStatus]="validateForm.controls['phonenumber']"
+                    nzErrorTip="Please input your phone number!">
+                    <nz-input-group nzAddOnBefore="+91">
+                        <input formControlName="phonenumber" id="'phonenumber'" nz-input />
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">E-mail</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid E-mail!">
+                    <input nz-input formControlName="email" id="email" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row class="register-area">
+                <nz-form-control [nzSpan]="4" [nzOffset]="6">
+                    <button nz-button nzType="primary" [nzLoading]="submitLoading" (click)="whichButton('save')"
+                        (keyup.enter)="whichButton('save')">Save</button>
+                </nz-form-control>
+                <nz-form-control [nzSpan]="8" [nzOffset]="2">
+                    <button nz-button [nzLoading]="submitLoading" (click)="whichButton('prescription')"
+                        (keyup.enter)="whichButton('prescription')">Save and go to prescription</button>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </nz-page-header-content>
+    <nz-page-header-footer>
+    </nz-page-header-footer>
+</nz-page-header>

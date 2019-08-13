@@ -1,0 +1,55 @@
+<nz-page-header nzBackIcon (nzBack)="getBack()">
+    <nz-page-header-title>All Patients</nz-page-header-title>
+    <nz-page-header-subtitle>All OPD Patients</nz-page-header-subtitle>
+    <nz-page-header-tags>
+    </nz-page-header-tags>
+    <nz-page-header-extra>
+        <button nz-button nzType="primary" [routerLink]="['/patient/new']">Add New Patient</button>
+    </nz-page-header-extra>
+    <nz-page-header-content>
+        <nz-table #basicTable nzSize="middle" [nzData]="patients" nzShowPagination nzShowSizeChanger
+            [nzLoading]="loading">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Age</th>
+                    <th>Phone</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of patients">
+                    <td>{{ data.name }}</td>
+                    <td>{{ data.gender }}</td>
+                    <td>{{ data.age }} {{data.ageEnum}}</td>
+                    <td>{{ data.phonenumber }}</td>
+                    <td>
+                        <a [routerLink]="['/patient/new-prescription', data.Id]" title="New Prescription">
+                            <i nz-icon nzType="snippets" nzTheme="outline"></i>
+                        </a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a [routerLink]="['/patient/all-prescriptions', data.Id]" title="All Prescriptions">
+                            <i nz-icon nzType="ordered-list" nzTheme="outline"></i>
+                        </a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a [routerLink]="['/patient/detail', data.Id]">
+                            <i nz-icon nzType="eye" nzTheme="outline"></i>
+                        </a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a>
+                            <i nz-icon nzType="edit" [nzTheme]="'twotone'" [nzTwotoneColor]="'#52c41a'"></i>
+                        </a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm nzTitle="Are you sure delete this patient?" (nzOnConfirm)="confirm(data.id)"
+                            (nzOnCancel)="cancel()">
+                            <i nz-icon nzType="delete" [nzTheme]="'twotone'" [nzTwotoneColor]="'#eb2f96'"></i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-page-header-content>
+    <nz-page-header-footer>
+    </nz-page-header-footer>
+</nz-page-header>

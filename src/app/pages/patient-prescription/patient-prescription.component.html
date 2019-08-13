@@ -1,0 +1,314 @@
+<nz-page-header nzBackIcon (nzBack)="getBack()">
+    <nz-page-header-title>Patient Checkup</nz-page-header-title>
+    <nz-page-header-subtitle>Create Patient Checkup Detail</nz-page-header-subtitle>
+    <nz-page-header-tags>
+    </nz-page-header-tags>
+    <nz-page-header-extra>
+        <button nz-button nz-dropdown [nzDropdownMenu]="menu">Save<i nz-icon nzType="down"></i></button>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+                <li nz-menu-item>
+                    <a>Save and Back to Patients List</a>
+                </li>
+                <li nz-menu-item>
+                    <a>Save and Add Another</a>
+                </li>
+                <li nz-menu-item>
+                    <a>Save and Go to Prescription</a>
+                </li>
+            </ul>
+        </nz-dropdown-menu>
+    </nz-page-header-extra>
+    <nz-page-header-content>
+        <div nz-row nzGutter="16">
+            <div nz-col nzSpan="24">
+                <nz-card [nzLoading]="loading" nzTitle="Patient Info" [nzExtra]="extraTemplate">
+                    <div *ngIf="patient">
+                        <div nz-row>
+                            <div nz-col [nzSm]="12" [nzMd]="6" [nzXs]="24">
+                                <p><strong>Name:</strong> {{patient.name}}</p>
+                            </div>
+                            <div nz-col [nzSm]="12" [nzMd]="6" [nzXs]="24">
+                                <p><strong>Gender / Age:</strong> {{patient.gender ? patient.gender : '--'}}
+                                    / {{patient.age}} {{patient.ageEnum}}</p>
+                            </div>
+                            <div nz-col [nzSm]="12" [nzMd]="6" [nzXs]="24">
+                                <p><strong>Phone:</strong> {{patient.phonenumber ? patient.phonenumber : '--'}}</p>
+                            </div>
+                            <div nz-col [nzSm]="12" [nzMd]="6" [nzXs]="24">
+                                <p><strong>Email:</strong> {{patient.email ? patient.email : '--'}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </nz-card>
+                <ng-template #extraTemplate>
+                    <a>
+                        <i nz-icon nzType="edit" nzTheme="outline"></i>
+                    </a>
+                </ng-template>
+            </div>
+            <div nz-col nzSpan="24">
+                <nz-collapse [nzBordered]="false">
+                    <nz-collapse-panel nzHeader="Symptoms and Diagnosis" nzActive="true">
+                        <form nz-form [formGroup]="sympForm">
+                            <nz-form-item>
+                                <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="symptom" nzRequired>
+                                    <span>
+                                        Symptoms
+                                    </span>
+                                </nz-form-label>
+                                <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input symptom!">
+                                    <input nz-input id="symptom" formControlName="symptom"
+                                        (keyup.enter)="addSymptom($event)" />
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <nz-tag *ngFor="let symptom of symptoms; let i = index" nzMode="closeable"
+                                    (nzAfterClose)="handleCloseSymp(i)" [nzColor]="'#108ee9'">
+                                    {{ symptom }}
+                                </nz-tag>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="diagnosis" nzRequired>
+                                    <span>
+                                        Diagnosis
+                                    </span>
+                                </nz-form-label>
+                                <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input diagnosis!">
+                                    <input nz-input id="diagnosis" formControlName="diagnosis"
+                                        (keyup.enter)="addDiag($event)" />
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <nz-tag *ngFor="let diag of diags; let i = index" nzMode="closeable"
+                                    (nzAfterClose)="handleCloseDiag(i)" [nzColor]="'#108ee9'">
+                                    {{ diag }}
+                                </nz-tag>
+                            </nz-form-item>
+                            <nz-form-item nz-row class="register-area">
+                                <nz-form-control [nzSpan]="14" [nzOffset]="6">
+                                    <button type="button" (key.enter)="submitSympForm()" (click)="submitSympForm()"
+                                        nz-button nzType="primary" [nzLoading]="loading">Save &
+                                        Continue</button>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </form>
+                    </nz-collapse-panel>
+                    <nz-collapse-panel nzHeader="Medicines and Tests" nzActive="true">
+                        <div nz-row nzGutter="16">
+                            <div nz-col nzSpan="8">
+                                <form nzLayout="vertical" nz-form [formGroup]="medForm" (ngSubmit)="submitMed()">
+                                    <nz-form-item>
+                                        <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="name" nzRequired>
+                                            <span>
+                                                Medicine Name
+                                            </span>
+                                        </nz-form-label>
+                                        <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Please input medicine!">
+                                            <input nz-input id="name" formControlName="name" />
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                    <nz-form-item>
+                                        <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="instruction" nzRequired>
+                                            <span>
+                                                Instructions
+                                            </span>
+                                        </nz-form-label>
+                                        <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Please input instruction!">
+                                            <input nz-input id="instruction" formControlName="instruction" />
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                    <nz-form-item>
+                                        <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="frequency" nzRequired>
+                                            <span>
+                                                How many times?
+                                            </span>
+                                        </nz-form-label>
+                                        <nz-form-control [nzSm]="24" [nzXs]="24"
+                                            nzErrorTip="How many times to take medicine!">
+                                            <nz-input-group [nzAddOnAfter]="addOnBeforeTemplate1">
+                                                <ng-template #addOnBeforeTemplate1>
+                                                    <nz-select formControlName="freqEnum" class="phone-select">
+                                                        <nz-option nzLabel="24 Hours" nzValue="24 hours"></nz-option>
+                                                        <nz-option nzLabel="Days" nzValue="days"></nz-option>
+                                                        <nz-option nzLabel="Months" nzValue="months"></nz-option>
+                                                    </nz-select>
+                                                </ng-template>
+                                                <input nz-input id="frequency" formControlName="frequency" />
+                                            </nz-input-group>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                    <nz-form-item>
+                                        <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="duration" nzRequired>
+                                            <span>
+                                                Duration
+                                            </span>
+                                        </nz-form-label>
+                                        <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Please input duration!">
+                                            <input nz-input id="duration" formControlName="duration" />
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                    <nz-form-item nz-row class="register-area">
+                                        <nz-form-control [nzSpan]="14" [nzOffset]="6">
+                                            <button nz-button nzType="primary" [nzLoading]="loading">Save &
+                                                Continue</button>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </form>
+                            </div>
+                            <div nz-col nzSpan="16">
+                                <nz-table #basicTable nzSize="middle" [nzData]="medicines" nzShowPagination
+                                    nzShowSizeChanger [nzLoading]="loading">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Frequnecy</th>
+                                            <th>Duration</th>
+                                            <th>Instruction</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let data of medicines; let i = index">
+                                            <td>{{ data.name }}</td>
+                                            <td>{{ data.frequency }} / {{data.freqEnum}}</td>
+                                            <td>{{ data.duration }}</td>
+                                            <td>{{ data.instruction }}</td>
+                                            <td>
+                                                <a>
+                                                    <i nz-icon nzType="edit" [nzTheme]="'twotone'"
+                                                        [nzTwotoneColor]="'#52c41a'"></i>
+                                                </a>
+                                                <nz-divider nzType="vertical"></nz-divider>
+                                                <a nz-popconfirm nzTitle="Are you sure delete this medicine?"
+                                                    (nzOnConfirm)="confirmMedDel(i)" (nzOnCancel)="cancel()">
+                                                    <i nz-icon nzType="delete" [nzTheme]="'twotone'"
+                                                        [nzTwotoneColor]="'#eb2f96'"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </nz-table>
+                            </div>
+                        </div>
+                        <div nz-row nzGutter="16">
+                            <div nz-col nzSpan="8">
+                                <form nzLayout="vertical" nz-form [formGroup]="testForm" (ngSubmit)="submitTest()">
+                                    <nz-form-item>
+                                        <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="name" nzRequired>
+                                            <span>
+                                                Test Name
+                                            </span>
+                                        </nz-form-label>
+                                        <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Please input medicine!">
+                                            <input nz-input id="name" formControlName="name" />
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                    <nz-form-item>
+                                        <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="instruction" nzRequired>
+                                            <span>
+                                                Instructions
+                                            </span>
+                                        </nz-form-label>
+                                        <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Please input instruction!">
+                                            <input nz-input id="instruction" formControlName="instruction" />
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                    <nz-form-item>
+                                        <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="result" nzRequired>
+                                            <span>
+                                                Result
+                                            </span>
+                                        </nz-form-label>
+                                        <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Please input result!">
+                                            <input nz-input id="result" formControlName="result" />
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                    <nz-form-item nz-row class="register-area">
+                                        <nz-form-control [nzSpan]="14" [nzOffset]="6">
+                                            <button nz-button nzType="primary" [nzLoading]="loading">Save &
+                                                Continue</button>
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </form>
+                            </div>
+                            <div nz-col nzSpan="16">
+                                <nz-table #basicTable nzSize="middle" [nzData]="tests" nzShowPagination
+                                    nzShowSizeChanger [nzLoading]="loading">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Instruction</th>
+                                            <th>Result</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let data of tests; let i = index">
+                                            <td>{{ data.name }}</td>
+                                            <td>{{ data.instruction }}</td>
+                                            <td>{{ data.result }}</td>
+                                            <td>
+                                                <a>
+                                                    <i nz-icon nzType="edit" [nzTheme]="'twotone'"
+                                                        [nzTwotoneColor]="'#52c41a'"></i>
+                                                </a>
+                                                <nz-divider nzType="vertical"></nz-divider>
+                                                <a nz-popconfirm nzTitle="Are you sure delete this medicine?"
+                                                    (nzOnConfirm)="confirmTestDel(i)" (nzOnCancel)="cancel()">
+                                                    <i nz-icon nzType="delete" [nzTheme]="'twotone'"
+                                                        [nzTwotoneColor]="'#eb2f96'"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </nz-table>
+                            </div>
+                        </div>
+                    </nz-collapse-panel>
+                    <nz-collapse-panel nzHeader="Instructions and Next Meeting" nzActive="true">
+                        <form nz-form nzLayout="vertical" [formGroup]="checkupForm" (ngSubmit)="submitCheckup()">
+                            <nz-form-item>
+                                <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="instruction" nzRequired>
+                                    <span>
+                                        Instructions
+                                    </span>
+                                </nz-form-label>
+                                <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Please input instruction!">
+                                    <input nz-input id="instruction" formControlName="instruction" />
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item>
+                                <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="nextVisit" nzRequired>
+                                    <span>
+                                        Next visit
+                                    </span>
+                                </nz-form-label>
+                                <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Next visit!">
+                                    <nz-input-group [nzAddOnAfter]="addOnBeforeTemplate">
+                                        <ng-template #addOnBeforeTemplate>
+                                            <nz-select formControlName="nextVisitEnum" class="phone-select">
+                                                <nz-option nzLabel="Days" nzValue="days"></nz-option>
+                                                <nz-option nzLabel="Months" nzValue="months"></nz-option>
+                                                <nz-option nzLabel="Years" nzValue="years"></nz-option>
+                                            </nz-select>
+                                        </ng-template>
+                                        <input nz-input id="nextVisit" formControlName="nextVisit" />
+                                    </nz-input-group>
+                                </nz-form-control>
+                            </nz-form-item>
+                            <nz-form-item nz-row class="register-area">
+                                <nz-form-control [nzSpan]="14" [nzOffset]="6">
+                                    <button nz-button nzType="primary" [nzLoading]="loading">Save &
+                                        Continue</button>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </form>
+                    </nz-collapse-panel>
+                </nz-collapse>
+            </div>
+        </div>
+    </nz-page-header-content>
+    <nz-page-header-footer>
+    </nz-page-header-footer>
+</nz-page-header>
